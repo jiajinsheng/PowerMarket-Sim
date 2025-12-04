@@ -136,7 +136,7 @@ export const generateChartData = (participants: Participant[], clearingResult: C
         supplyData.push({ x: sAcc, y: g.price, name: g.name }); // Step End (Horizontal line)
       }
       // Extend slightly to show the end of the last block
-      supplyData.push({ x: sAcc, y: generators[generators.length-1].price * 1.5, name: 'End Supply' }); 
+      supplyData.push({ x: sAcc, y: generators[generators.length-1].price * 1.5, name: '供给结束' }); 
   }
 
   const demandData = [];
@@ -149,7 +149,7 @@ export const generateChartData = (participants: Participant[], clearingResult: C
         demandData.push({ x: dAcc, y: l.price, name: l.name });
       }
       // Drop to zero at the end
-      demandData.push({ x: dAcc, y: 0, name: 'End Demand' });
+      demandData.push({ x: dAcc, y: 0, name: '需求结束' });
   }
   
   const maxQ = Math.max(sAcc, dAcc) * 1.1;

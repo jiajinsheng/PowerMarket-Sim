@@ -45,9 +45,9 @@ const App: React.FC = () => {
             </div>
             <div>
                 <h1 className="text-xl font-bold text-slate-800 leading-tight">
-                PowerMarket <span className="text-indigo-600">Sim</span>
+                电力市场 <span className="text-indigo-600">模拟仿真</span>
                 </h1>
-                <p className="text-xs text-slate-500 font-medium">Educational Spot Market Clearing Engine</p>
+                <p className="text-xs text-slate-500 font-medium">现货市场出清算法教学演示</p>
             </div>
           </div>
           
@@ -56,13 +56,13 @@ const App: React.FC = () => {
               onClick={resetMarket}
               className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors border border-slate-200"
             >
-              <RefreshCw className="w-4 h-4" /> Reset
+              <RefreshCw className="w-4 h-4" /> 重置
             </button>
             <button 
               onClick={clearAll}
               className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-lg transition-colors border border-rose-100"
             >
-              <Trash2 className="w-4 h-4" /> Clear All
+              <Trash2 className="w-4 h-4" /> 清空
             </button>
           </div>
         </div>
@@ -74,20 +74,20 @@ const App: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex justify-between items-start mb-2">
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Clearing Price (MCP)</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">出清价格 (MCP)</p>
                 <div className="p-1.5 bg-indigo-50 rounded-lg">
                     <BookOpen className="w-4 h-4 text-indigo-500" />
                 </div>
             </div>
             <div className="text-3xl font-extrabold text-slate-800">
-              ${clearingResult?.clearingPrice.toFixed(2) || '0.00'}
+              ¥{clearingResult?.clearingPrice.toFixed(2) || '0.00'}
             </div>
-            <p className="text-xs text-slate-400 mt-1 font-medium">Per Megawatt-hour</p>
+            <p className="text-xs text-slate-400 mt-1 font-medium">元 / 兆瓦时 (MWh)</p>
           </div>
 
           <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex justify-between items-start mb-2">
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Cleared Volume (MCV)</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">出清电量 (MCV)</p>
                 <div className="p-1.5 bg-emerald-50 rounded-lg">
                     <Activity className="w-4 h-4 text-emerald-500" />
                 </div>
@@ -95,27 +95,27 @@ const App: React.FC = () => {
             <div className="text-3xl font-extrabold text-slate-800">
               {clearingResult?.clearedVolume.toFixed(1) || '0.0'} <span className="text-lg text-slate-400 font-bold">MW</span>
             </div>
-             <p className="text-xs text-slate-400 mt-1 font-medium">Total Power Traded</p>
+             <p className="text-xs text-slate-400 mt-1 font-medium">市场成交总负荷</p>
           </div>
 
           <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
              <div className="flex justify-between items-start mb-2">
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Social Welfare</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">社会总福利 (Surplus)</p>
             </div>
             <div className="text-3xl font-extrabold text-emerald-600">
-              ${(clearingResult?.marketSurplus || 0).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+              ¥{(clearingResult?.marketSurplus || 0).toLocaleString(undefined, { maximumFractionDigits: 0 })}
             </div>
-             <p className="text-xs text-slate-400 mt-1 font-medium">Consumer + Producer Surplus</p>
+             <p className="text-xs text-slate-400 mt-1 font-medium">生产者盈余 + 消费者剩余</p>
           </div>
 
           <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
              <div className="flex justify-between items-start mb-2">
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Participants</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">市场主体 (Orders)</p>
             </div>
             <div className="text-3xl font-extrabold text-slate-800">
               {participants.length}
             </div>
-             <p className="text-xs text-slate-400 mt-1 font-medium">Active Orders</p>
+             <p className="text-xs text-slate-400 mt-1 font-medium">当前有效申报数</p>
           </div>
         </div>
 
@@ -128,13 +128,13 @@ const App: React.FC = () => {
             {/* List to Delete Items */}
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
               <div className="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-                 <h3 className="font-bold text-slate-700 text-sm">Active Orders</h3>
-                 <span className="text-xs font-medium text-slate-400">{participants.length} items</span>
+                 <h3 className="font-bold text-slate-700 text-sm">已申报订单 (Active Orders)</h3>
+                 <span className="text-xs font-medium text-slate-400">{participants.length} 笔</span>
               </div>
               <div className="divide-y divide-slate-50 max-h-[400px] overflow-y-auto custom-scrollbar">
                 {participants.length === 0 && (
                     <div className="p-8 text-center text-slate-400 text-sm">
-                        No orders in the book yet.
+                        暂无订单数据，请在上方添加。
                     </div>
                 )}
                 {participants.map(p => (
@@ -144,7 +144,7 @@ const App: React.FC = () => {
                         <div className="flex flex-col">
                             <span className="text-sm font-bold text-slate-700">{p.name}</span>
                             <span className="text-xs text-slate-500 font-mono">
-                            {p.capacity}MW @ ${p.price}
+                            {p.capacity}MW @ ¥{p.price}
                             </span>
                         </div>
                      </div>
@@ -172,10 +172,11 @@ const App: React.FC = () => {
                   <Info className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="font-bold text-indigo-900 text-sm mb-1">How Pricing Works (Merit Order Effect)</h4>
+                <h4 className="font-bold text-indigo-900 text-sm mb-1">定价原理：优序效应 (Merit Order Effect)</h4>
                 <p className="text-sm text-indigo-800/80 leading-relaxed">
-                  The Market Clearing Price (MCP) is set by the intersection of supply and demand. 
-                  Generators are stacked from cheapest to most expensive. The last generator needed to meet demand is the <span className="font-bold">Marginal Unit</span>, setting the price for everyone.
+                  市场出清价格 (MCP) 由供给和需求曲线的交点决定。所有发电机组按照报价从低到高排序。
+                  满足全社会用电需求的最后一台机组被称为<span className="font-bold">“边际机组”</span>，它的报价决定了整个市场的统一出清价格。
+                  在此价格以下的低成本机组（如风光、核电）将获得较高的生产者盈余。
                 </p>
               </div>
             </div>

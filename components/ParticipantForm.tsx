@@ -6,6 +6,16 @@ interface ParticipantFormProps {
   onAdd: (p: Participant) => void;
 }
 
+const FUEL_TYPE_LABELS: Record<FuelType, string> = {
+  [FuelType.SOLAR]: '光伏 (Solar)',
+  [FuelType.WIND]: '风电 (Wind)',
+  [FuelType.HYDRO]: '水电 (Hydro)',
+  [FuelType.NUCLEAR]: '核电 (Nuclear)',
+  [FuelType.COAL]: '燃煤 (Coal)',
+  [FuelType.GAS]: '燃气 (Gas)',
+  [FuelType.BATTERY]: '储能 (Battery)'
+};
+
 export const ParticipantForm: React.FC<ParticipantFormProps> = ({ onAdd }) => {
   const [type, setType] = useState<ParticipantType>(ParticipantType.GENERATOR);
   const [name, setName] = useState('');
@@ -39,7 +49,7 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({ onAdd }) => {
         <div className="bg-slate-100 p-1.5 rounded-md text-slate-600">
              <Plus className="w-5 h-5" />
         </div>
-        Add Participant
+        添加市场主体
       </h3>
       <form onSubmit={handleSubmit} className="space-y-5">
         
@@ -54,7 +64,7 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({ onAdd }) => {
                 : 'text-slate-400 hover:text-slate-600'
             }`}
           >
-            <Zap className="w-4 h-4" /> Generator
+            <Zap className="w-4 h-4" /> 发电侧 (卖方)
           </button>
           <button
             type="button"
@@ -65,17 +75,17 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({ onAdd }) => {
                 : 'text-slate-400 hover:text-slate-600'
             }`}
           >
-            <Factory className="w-4 h-4" /> Load
+            <Factory className="w-4 h-4" /> 用电侧 (买方)
           </button>
         </div>
 
         <div className="space-y-4">
             <div>
-            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Name</label>
+            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">名称</label>
             <input
                 type="text"
                 className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm font-medium transition-all placeholder:text-slate-400"
-                placeholder={type === ParticipantType.GENERATOR ? "e.g. Solar Farm A" : "e.g. City Grid"}
+                placeholder={type === ParticipantType.GENERATOR ? "例如：二期光伏电站" : "例如：高新园区负荷"}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
             />
@@ -83,7 +93,7 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({ onAdd }) => {
 
             {type === ParticipantType.GENERATOR && (
             <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Fuel Source</label>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">能源类型</label>
                 <div className="relative">
                     <select
                         value={fuel}
@@ -91,7 +101,7 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({ onAdd }) => {
                         className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm font-medium appearance-none"
                     >
                         {Object.values(FuelType).map(f => (
-                            <option key={f} value={f}>{f}</option>
+                            <option key={f} value={f}>{FUEL_TYPE_LABELS[f]}</option>
                         ))}
                     </select>
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
@@ -103,7 +113,7 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({ onAdd }) => {
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">MW</label>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">容量 (MW)</label>
                     <input
                     type="number"
                     min="0"
@@ -116,14 +126,14 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({ onAdd }) => {
                 </div>
                 <div>
                     <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
-                        {type === ParticipantType.GENERATOR ? 'Offer ($)' : 'Bid ($)'}
+                        {type === ParticipantType.GENERATOR ? '报价 (¥/MWh)' : '买价 (¥/MWh)'}
                     </label>
                     <input
                     type="number"
                     min="0"
                     step="0.01"
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm font-medium"
-                    placeholder="50.00"
+                    placeholder="350.00"
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                     />
@@ -139,7 +149,7 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({ onAdd }) => {
                 : 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-200'
           }`}
         >
-          Add to Order Book
+          {type === ParticipantType.GENERATOR ? '添加发电报价' : '添加用电需求'}
         </button>
 
       </form>
