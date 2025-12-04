@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Participant, ClearingResult } from './types';
 import { DEFAULT_PARTICIPANTS } from './constants';
-import { calculateClearing } from './utils/marketLogic';
-import { MarketChart } from './components/MarketChart';
-import { ParticipantForm } from './components/ParticipantForm';
-import { ResultsTable } from './components/ResultsTable';
+import { calculateClearing } from './marketLogic';
+import { MarketChart } from './MarketChart';
+import { ParticipantForm } from './ParticipantForm';
+import { ResultsTable } from './ResultsTable';
 import { Activity, RefreshCw, Trash2, Info, BookOpen } from 'lucide-react';
 
 const App: React.FC = () => {
