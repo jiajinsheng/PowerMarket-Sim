@@ -34,22 +34,24 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({ onAdd }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 h-full">
-      <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-        <Plus className="w-5 h-5 text-indigo-600" />
-        Add Market Order
+    <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+      <h3 className="text-lg font-bold text-slate-800 mb-5 flex items-center gap-2">
+        <div className="bg-slate-100 p-1.5 rounded-md text-slate-600">
+             <Plus className="w-5 h-5" />
+        </div>
+        Add Participant
       </h3>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         
         {/* Type Toggle */}
-        <div className="flex p-1 bg-slate-100 rounded-lg">
+        <div className="grid grid-cols-2 gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-100">
           <button
             type="button"
             onClick={() => setType(ParticipantType.GENERATOR)}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all ${
+            className={`flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 ${
               type === ParticipantType.GENERATOR 
-                ? 'bg-white text-emerald-600 shadow-sm' 
-                : 'text-slate-500 hover:text-slate-700'
+                ? 'bg-white text-emerald-600 shadow-sm ring-1 ring-emerald-100' 
+                : 'text-slate-400 hover:text-slate-600'
             }`}
           >
             <Zap className="w-4 h-4" /> Generator
@@ -57,76 +59,87 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({ onAdd }) => {
           <button
             type="button"
             onClick={() => setType(ParticipantType.LOAD)}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all ${
+            className={`flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 ${
               type === ParticipantType.LOAD 
-                ? 'bg-white text-blue-600 shadow-sm' 
-                : 'text-slate-500 hover:text-slate-700'
+                ? 'bg-white text-blue-600 shadow-sm ring-1 ring-blue-100' 
+                : 'text-slate-400 hover:text-slate-600'
             }`}
           >
             <Factory className="w-4 h-4" /> Load
           </button>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Name</label>
-          <input
-            type="text"
-            className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
-            placeholder={type === ParticipantType.GENERATOR ? "e.g. Solar Farm A" : "e.g. City Grid"}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-
-        {type === ParticipantType.GENERATOR && (
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Fuel Type</label>
-            <select
-              value={fuel}
-              onChange={(e) => setFuel(e.target.value as FuelType)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
-            >
-              {Object.values(FuelType).map(f => (
-                <option key={f} value={f}>{f}</option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Quantity (MW)</label>
+        <div className="space-y-4">
+            <div>
+            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Name</label>
             <input
-              type="number"
-              min="0"
-              step="1"
-              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
-              placeholder="100"
-              value={capacity}
-              onChange={(e) => setCapacity(e.target.value)}
+                type="text"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm font-medium transition-all placeholder:text-slate-400"
+                placeholder={type === ParticipantType.GENERATOR ? "e.g. Solar Farm A" : "e.g. City Grid"}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              {type === ParticipantType.GENERATOR ? 'Offer Price ($)' : 'Bid Price ($)'}
-            </label>
-            <input
-              type="number"
-              min="0"
-              step="0.01"
-              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
-              placeholder="50.00"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-            />
-          </div>
+            </div>
+
+            {type === ParticipantType.GENERATOR && (
+            <div>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Fuel Source</label>
+                <div className="relative">
+                    <select
+                        value={fuel}
+                        onChange={(e) => setFuel(e.target.value as FuelType)}
+                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm font-medium appearance-none"
+                    >
+                        {Object.values(FuelType).map(f => (
+                            <option key={f} value={f}>{f}</option>
+                        ))}
+                    </select>
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                </div>
+            </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-4">
+                <div>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">MW</label>
+                    <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm font-medium"
+                    placeholder="100"
+                    value={capacity}
+                    onChange={(e) => setCapacity(e.target.value)}
+                    />
+                </div>
+                <div>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                        {type === ParticipantType.GENERATOR ? 'Offer ($)' : 'Bid ($)'}
+                    </label>
+                    <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm font-medium"
+                    placeholder="50.00"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    />
+                </div>
+            </div>
         </div>
 
         <button
           type="submit"
-          className="w-full bg-slate-900 hover:bg-slate-800 text-white py-2.5 rounded-lg text-sm font-medium transition-colors"
+          className={`w-full py-3 rounded-lg text-sm font-bold shadow-sm transition-all transform active:scale-[0.98] ${
+            type === ParticipantType.GENERATOR
+                ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-200'
+                : 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-200'
+          }`}
         >
-          Add {type === ParticipantType.GENERATOR ? 'Offer' : 'Bid'}
+          Add to Order Book
         </button>
 
       </form>

@@ -28,7 +28,7 @@ export interface ClearingResult {
   clearedVolume: number;
   clearedOrders: ClearedOrder[];
   marketSurplus: number;
-  isCongested?: boolean; // Simplified placeholder
+  isCongested?: boolean;
 }
 
 export interface ClearedOrder {
@@ -37,6 +37,7 @@ export interface ClearedOrder {
   revenue: number; // For generators
   cost: number; // For loads
   surplus: number;
+  isMarginal?: boolean; // True if this unit set the clearing price
 }
 
 export interface ChartPoint {

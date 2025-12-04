@@ -9,8 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
   ReferenceLine,
-  ReferenceDot,
-  Area
+  ReferenceDot
 } from 'recharts';
 import { Participant, ClearingResult } from '../types';
 import { generateChartData } from '../utils/marketLogic';
@@ -23,12 +22,14 @@ interface MarketChartProps {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white p-3 border border-slate-200 shadow-lg rounded-lg text-sm">
-        <p className="font-bold text-slate-700">Quantity: {label} MW</p>
+      <div className="bg-white p-3 border border-slate-200 shadow-xl rounded-lg text-sm z-50">
+        <p className="font-bold text-slate-700 mb-1">Quantity: {label.toFixed(1)} MW</p>
         {payload.map((entry: any, index: number) => (
-          <p key={index} style={{ color: entry.color }}>
-            {entry.name}: ${entry.value?.toFixed(2)}/MWh
-          </p>
+          <div key={index} className="flex items-center gap-2 mb-1 last:mb-0">
+            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }}></div>
+            <span className="text-slate-600 font-medium">{entry.name}:</span>
+            <span className="text-slate-900 font-mono">${entry.value?.toFixed(2)}</span>
+          </div>
         ))}
       </div>
     );
@@ -37,71 +38,84 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export const MarketChart: React.FC<MarketChartProps> = ({ participants, result }) => {
-  const { supplyData, demandData, maxQ } = useMemo(() => generateChartData(participants, result), [participants, result]);
+  const { supplyData, demandData } = useMemo(() => generateChartData(participants, result), [participants, result]);
   
-  // We need to merge data for ComposedChart or plot two separate lines. 
-  // ComposedChart with type="number" on XAxis allows arbitrary x-coordinates.
-
   return (
-    <div className="w-full h-[400px] bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-      <h3 className="text-lg font-semibold text-slate-800 mb-4">Market Clearing Diagram</h3>
-      <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart margin={{ top: 20, right: 30, bottom: 20, left: 20 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+    <div className="w-full h-[400px] bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="text-lg font-bold text-slate-800">Supply & Demand Curves</h3>
+        <div className="flex gap-4 text-xs font-medium">
+           <div className="flex items-center gap-1.5">
+             <div className="w-3 h-3 bg-emerald-500 rounded-sm"></div> Supply (Merit Order)
+           </div>
+           <div className="flex items-center gap-1.5">
+             <div className="w-3 h-3 bg-blue-500 rounded-sm"></div> Demand (Willingness to Pay)
+           </div>
+        </div>
+      </div>
+      
+      <ResponsiveContainer width="100%" height="85%">
+        <ComposedChart margin={{ top: 10, right: 30, bottom: 20, left: 10 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
           <XAxis 
             dataKey="x" 
             type="number" 
-            label={{ value: 'Quantity (MW)', position: 'insideBottom', offset: -10 }} 
+            label={{ value: 'Capacity (MW)', position: 'insideBottom', offset: -10, fill: '#64748b', fontSize: 12 }} 
             domain={[0, 'dataMax']}
-            allowDataOverflow={false}
+            tick={{ fill: '#64748b', fontSize: 11 }}
+            tickLine={false}
+            axisLine={{ stroke: '#cbd5e1' }}
           />
           <YAxis 
-            label={{ value: 'Price ($/MWh)', angle: -90, position: 'insideLeft' }} 
+            label={{ value: 'Price ($/MWh)', angle: -90, position: 'insideLeft', offset: 0, fill: '#64748b', fontSize: 12 }} 
             domain={[0, 'auto']}
+            tick={{ fill: '#64748b', fontSize: 11 }}
+            tickLine={false}
+            axisLine={false}
           />
-          <Tooltip content={<CustomTooltip />} />
-          <Legend verticalAlign="top" height={36}/>
+          <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#94a3b8', strokeWidth: 1, strokeDasharray: '4 4' }} />
           
-          {/* Supply Curve */}
+          {/* Supply Curve - Linear used because data contains explicit step corners */}
           <Line 
             data={supplyData} 
             dataKey="y" 
-            name="Supply Offer" 
+            name="Supply" 
             stroke="#10b981" 
-            strokeWidth={3} 
+            strokeWidth={2.5} 
             dot={false} 
-            type="stepAfter"
+            type="linear" 
             isAnimationActive={false}
+            fillOpacity={1}
+            fill="url(#colorSupply)"
           />
 
           {/* Demand Curve */}
           <Line 
             data={demandData} 
             dataKey="y" 
-            name="Demand Bid" 
+            name="Demand" 
             stroke="#3b82f6" 
-            strokeWidth={3} 
+            strokeWidth={2.5} 
             dot={false} 
-            type="stepAfter"
+            type="linear" 
             isAnimationActive={false}
           />
 
-          {/* Clearing Point */}
+          {/* Clearing Point Visualization */}
           {result.clearedVolume > 0 && (
-            <ReferenceDot 
-              x={result.clearedVolume} 
-              y={result.clearingPrice} 
-              r={6} 
-              fill="#f59e0b" 
-              stroke="none"
-            />
+            <>
+              <ReferenceLine x={result.clearedVolume} stroke="#f59e0b" strokeDasharray="3 3" />
+              <ReferenceLine y={result.clearingPrice} stroke="#f59e0b" strokeDasharray="3 3" />
+              <ReferenceDot 
+                x={result.clearedVolume} 
+                y={result.clearingPrice} 
+                r={6} 
+                fill="#fff" 
+                stroke="#f59e0b"
+                strokeWidth={3}
+              />
+            </>
           )}
-           {result.clearedVolume > 0 && (
-             <ReferenceLine x={result.clearedVolume} stroke="#94a3b8" strokeDasharray="3 3" label="MCV" />
-           )}
-           {result.clearedVolume > 0 && (
-             <ReferenceLine y={result.clearingPrice} stroke="#94a3b8" strokeDasharray="3 3" label="MCP" />
-           )}
 
         </ComposedChart>
       </ResponsiveContainer>
