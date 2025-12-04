@@ -1,0 +1,5 @@
+{
+  "name": "PowerMarket Sim",
+  "description": "A simplified, interactive electricity spot market clearing simulator for educational purposes. Visualize supply and demand curves, merit order effects, and market clearing prices.",
+  "requestFramePermissions": []
+}
